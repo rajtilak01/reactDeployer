@@ -5,7 +5,7 @@ import path from "path";
 const s3 = new S3({
     // accessKeyId: process.env.ACCESSKEYID,
     // secretAccessKey:  process.env.SECRETACCESSKEY,
-   
+    
 })
 
 // output/asdasd

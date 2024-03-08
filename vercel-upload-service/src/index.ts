@@ -5,7 +5,7 @@ import {generate} from './utils';
 import {getAllFiles} from './file';
 import { uploadFile } from "./aws";
 import path from "path";
-import dotenv from "dotenv";
+ 
 import { createClient } from "redis";
 const publisher = createClient();
 publisher.connect();
