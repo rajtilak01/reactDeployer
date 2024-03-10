@@ -20,11 +20,12 @@ const s3 = new aws_sdk_1.S3({
 // secretAccessKey:  process.env.SECRETACCESSKEY,
 });
 const uploadFile = (fileName, localFilePath) => __awaiter(void 0, void 0, void 0, function* () {
+    const formattedfileName = fileName.replace(/\\/g, "/");
     const fileContent = fs_1.default.readFileSync(localFilePath);
     const response = yield s3.upload({
         Body: fileContent,
         Bucket: "vercel.rajtilak",
-        Key: fileName,
+        Key: formattedfileName,
     }).promise();
     console.log(response);
 });

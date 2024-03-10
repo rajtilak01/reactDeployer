@@ -22,6 +22,8 @@ const path_1 = __importDefault(require("path"));
 const redis_1 = require("redis");
 const publisher = (0, redis_1.createClient)();
 publisher.connect();
+const subsciber = (0, redis_1.createClient)();
+subsciber.connect();
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
@@ -32,20 +34,21 @@ app.post("/deploy", (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     const repoUrl = req.body.repoUrl;
     // console.log(__dirname);
     const id = (0, utils_1.generate)();
-    // await simpleGit().clone(repoUrl, path.join(__dirname,`output/${id}`));
     yield (0, simple_git_1.default)().clone(repoUrl, path_1.default.join(__dirname, `output/${id}`));
-    // const files = getAllFiles(path.join(__dirname, `output/${id}`));
     const files = (0, file_1.getAllFiles)(path_1.default.join(__dirname, `output/${id}`));
-    // files.forEach(async file => {
-    //     await uploadFile(file.slice(__dirname.length+1), file);
-    // })
     files.forEach((file) => __awaiter(void 0, void 0, void 0, function* () {
         yield (0, aws_1.uploadFile)(file.slice(__dirname.length + 1), file);
     }));
     publisher.lPush("build-queue", id);
+    publisher.hSet("status", id, "uploaded");
     res.json({
         id: id
     });
+}));
+app.get("/status", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const id = req.query.id;
+    const response = yield subsciber.hGet("status", id);
+    res.send(response);
 }));
 app.listen(port, () => {
     console.log(`App listening on ${port}`);

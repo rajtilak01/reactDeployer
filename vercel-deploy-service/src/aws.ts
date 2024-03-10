@@ -10,10 +10,9 @@ const s3 = new S3({
 
 // output/asdasd
 export async function downloadS3Folder(prefix: string) {
-    const formattedPrefix = prefix.replace(/\//g, "\\");
     const allFiles = await s3.listObjectsV2({
         Bucket: "vercel.rajtilak",
-        Prefix: formattedPrefix
+        Prefix: prefix
     }).promise();
     
     // 
@@ -66,11 +65,12 @@ const getAllFiles = (folderPath: string) => {
 }
 
 const uploadFile = async (fileName: string, localFilePath: string) => {
+    const formattedfileName = fileName.replace(/\\/g, "/");
     const fileContent = fs.readFileSync(localFilePath);
     const response = await s3.upload({
         Body: fileContent,
         Bucket: "vercel.rajtilak",
-        Key: fileName,
+        Key: formattedfileName,
     }).promise();
     console.log(response);
 }

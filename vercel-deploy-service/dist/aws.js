@@ -24,10 +24,9 @@ const s3 = new aws_sdk_1.S3({
 function downloadS3Folder(prefix) {
     var _a;
     return __awaiter(this, void 0, void 0, function* () {
-        const formattedPrefix = prefix.replace(/\//g, "\\");
         const allFiles = yield s3.listObjectsV2({
             Bucket: "vercel.rajtilak",
-            Prefix: formattedPrefix
+            Prefix: prefix
         }).promise();
         // 
         const allPromises = ((_a = allFiles.Contents) === null || _a === void 0 ? void 0 : _a.map(({ Key }) => __awaiter(this, void 0, void 0, function* () {
@@ -78,11 +77,12 @@ const getAllFiles = (folderPath) => {
     return response;
 };
 const uploadFile = (fileName, localFilePath) => __awaiter(void 0, void 0, void 0, function* () {
+    const formattedfileName = fileName.replace(/\\/g, "/");
     const fileContent = fs_1.default.readFileSync(localFilePath);
     const response = yield s3.upload({
         Body: fileContent,
         Bucket: "vercel.rajtilak",
-        Key: fileName,
+        Key: formattedfileName,
     }).promise();
     console.log(response);
 });
