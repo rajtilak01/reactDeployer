@@ -54,7 +54,7 @@ const getAllFiles = (folderPath: string) => {
 
     const allFilesAndFolders = fs.readdirSync(folderPath);
     allFilesAndFolders.forEach(file => {
-        const fullFilePath = path.join(folderPath, file);
+        const fullFilePath = path.join(folderPath, file).replace(/\\/g, '/');;
         if (fs.statSync(fullFilePath).isDirectory()) {
             response = response.concat(getAllFiles(fullFilePath))
         } else {

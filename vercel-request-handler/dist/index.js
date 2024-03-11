@@ -31,6 +31,7 @@ app.get("/*", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const contents = yield s3.getObject({
         Bucket: "vercel.rajtilak",
         Key: `dist/${id}${filePath.replace(/\\/g, '/')}`,
+        // Key: `dist/${id}${filePath.replace(/\\/g, '/')}`,
     }).promise();
     const type = filePath.endsWith("html") ? "text/html" : filePath.endsWith("css") ? "text/css" : "application/javascript";
     res.set("Content-Type", type);

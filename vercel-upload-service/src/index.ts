@@ -31,10 +31,17 @@ app.post("/deploy", async (req,res) => {
 
     const files = getAllFiles(path.join(__dirname, `output/${id}`));
 
-    files.forEach(async file => {
+    // const uploadPromises = files.map(async file => {
+    //     await uploadFile(file.slice(__dirname.length+1), file);
+    // })
+
+    // await Promise.all(uploadPromises);
+     
+    files.map(async file => {
         await uploadFile(file.slice(__dirname.length+1), file);
     })
-     
+  
+    new Promise(resolve => setTimeout(resolve, 10000));
     publisher.lPush("build-queue", id);
     publisher.hSet("status", id, "uploaded"); 
      

@@ -4,7 +4,6 @@ import {S3} from "aws-sdk"
 const s3 = new S3({
     // accessKeyId: process.env.ACCESSKEYID,
     // secretAccessKey:  process.env.SECRETACCESSKEY,
-   
 })
 
 const app = express(); 
@@ -22,6 +21,7 @@ app.get("/*", async (req,res)=> {
     const contents = await  s3.getObject({
         Bucket: "vercel.rajtilak",
         Key: `dist/${id}${filePath.replace(/\\/g, '/')}`,
+        // Key: `dist/${id}${filePath.replace(/\\/g, '/')}`,
     }).promise();
    
     const type = filePath.endsWith("html") ? "text/html" : filePath.endsWith("css") ? "text/css" : "application/javascript";

@@ -66,7 +66,8 @@ const getAllFiles = (folderPath) => {
     let response = [];
     const allFilesAndFolders = fs_1.default.readdirSync(folderPath);
     allFilesAndFolders.forEach(file => {
-        const fullFilePath = path_1.default.join(folderPath, file);
+        const fullFilePath = path_1.default.join(folderPath, file).replace(/\\/g, '/');
+        ;
         if (fs_1.default.statSync(fullFilePath).isDirectory()) {
             response = response.concat(getAllFiles(fullFilePath));
         }
