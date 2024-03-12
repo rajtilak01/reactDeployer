@@ -14,12 +14,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const aws_sdk_1 = require("aws-sdk");
+require('dotenv').config();
 const s3 = new aws_sdk_1.S3({
-// accessKeyId: process.env.ACCESSKEYID,
-// secretAccessKey:  process.env.SECRETACCESSKEY,
+    accessKeyId: process.env.ACCESSKEYID,
+    secretAccessKey: process.env.SECRETACCESSKEY,
 });
 const app = (0, express_1.default)();
-const port = 3001;
+const port = process.env.PORT || 5001;
 app.get("/*", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const host = req.hostname;
     console.log(host);

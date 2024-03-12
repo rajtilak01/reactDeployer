@@ -19,6 +19,7 @@ const utils_1 = require("./utils");
 const file_1 = require("./file");
 const aws_1 = require("./aws");
 const path_1 = __importDefault(require("path"));
+require('dotenv').config();
 const redis_1 = require("redis");
 const publisher = (0, redis_1.createClient)();
 publisher.connect();
@@ -29,7 +30,7 @@ app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 // dotenv.config();
 // dotenv.config({ path: '/.env' });
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 6000;
 app.post("/deploy", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const repoUrl = req.body.repoUrl;
     // console.log(__dirname);
@@ -52,7 +53,9 @@ app.post("/deploy", (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 }));
 app.get("/status", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const id = req.query.id;
+    console.log("id ", id);
     const response = yield subsciber.hGet("status", id);
+    console.log("response ", response);
     res.send(response);
 }));
 app.listen(port, () => {

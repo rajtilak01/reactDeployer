@@ -16,9 +16,10 @@ exports.copyFinalDist = exports.downloadS3Folder = void 0;
 const aws_sdk_1 = require("aws-sdk");
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
+require('dotenv').config();
 const s3 = new aws_sdk_1.S3({
-// accessKeyId: process.env.ACCESSKEYID,
-// secretAccessKey:  process.env.SECRETACCESSKEY,
+    accessKeyId: process.env.ACCESSKEYID,
+    secretAccessKey: process.env.SECRETACCESSKEY,
 });
 // output/asdasd
 function downloadS3Folder(prefix) {
@@ -37,10 +38,11 @@ function downloadS3Folder(prefix) {
                 }
                 const finalOutputPath = path_1.default.join(__dirname, Key);
                 const outputFile = fs_1.default.createWriteStream(finalOutputPath);
-                const dirName = path_1.default.dirname(finalOutputPath);
+                const dirName = path_1.default.dirname(finalOutputPath).replace(/\\/g, '/');
                 if (!fs_1.default.existsSync(dirName)) {
                     fs_1.default.mkdirSync(dirName, { recursive: true });
                 }
+                // console.log("dirname from allPromises", dirName);
                 s3.getObject({
                     Bucket: "vercel.rajtilak",
                     Key
@@ -56,9 +58,11 @@ function downloadS3Folder(prefix) {
 exports.downloadS3Folder = downloadS3Folder;
 function copyFinalDist(id) {
     const folderPath = path_1.default.join(__dirname, `output/${id}/dist`);
-    const allFiles = getAllFiles(folderPath);
+    const updatedFolderPath = folderPath.replace(/\\/g, '/');
+    const allFiles = getAllFiles(updatedFolderPath);
+    console.log("folder path from copyFinalDist", updatedFolderPath);
     allFiles.forEach(file => {
-        uploadFile(`dist/${id}/` + file.slice(folderPath.length + 1), file);
+        uploadFile(`dist/${id}/` + file.slice(updatedFolderPath.length + 1), file);
     });
 }
 exports.copyFinalDist = copyFinalDist;
@@ -75,6 +79,7 @@ const getAllFiles = (folderPath) => {
             response.push(fullFilePath);
         }
     });
+    console.log("response from getAllFiles function ", response);
     return response;
 };
 const uploadFile = (fileName, localFilePath) => __awaiter(void 0, void 0, void 0, function* () {

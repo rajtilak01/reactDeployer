@@ -15,9 +15,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.uploadFile = void 0;
 const aws_sdk_1 = require("aws-sdk");
 const fs_1 = __importDefault(require("fs"));
+const dotenv = require("dotenv");
+dotenv.config();
 const s3 = new aws_sdk_1.S3({
-// accessKeyId: process.env.ACCESSKEYID,
-// secretAccessKey:  process.env.SECRETACCESSKEY,
+    accessKeyId: process.env.ACCESSKEYID,
+    secretAccessKey: process.env.SECRETACCESSKEY,
 });
 const uploadFile = (fileName, localFilePath) => __awaiter(void 0, void 0, void 0, function* () {
     const formattedfileName = fileName.replace(/\\/g, "/");

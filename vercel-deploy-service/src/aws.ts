@@ -1,11 +1,10 @@
 import { S3 } from "aws-sdk";
 import fs from "fs";
-import path from "path";
-
+import path, { dirname } from "path";
+require('dotenv').config();
 const s3 = new S3({
-    // accessKeyId: process.env.ACCESSKEYID,
-    // secretAccessKey:  process.env.SECRETACCESSKEY,
-    
+    accessKeyId: process.env.ACCESSKEYID,
+    secretAccessKey:  process.env.SECRETACCESSKEY,
 })
 
 // output/asdasd
@@ -24,10 +23,11 @@ export async function downloadS3Folder(prefix: string) {
             }
             const finalOutputPath = path.join(__dirname, Key);
             const outputFile = fs.createWriteStream(finalOutputPath);
-            const dirName = path.dirname(finalOutputPath);
+            const dirName = path.dirname(finalOutputPath).replace(/\\/g, '/');
             if (!fs.existsSync(dirName)){
                 fs.mkdirSync(dirName, { recursive: true });
             }
+            console.log("dirname from allPromises", dirName);
             s3.getObject({
                 Bucket: "vercel.rajtilak",
                 Key
@@ -43,9 +43,11 @@ export async function downloadS3Folder(prefix: string) {
 
 export function copyFinalDist(id: string) {
     const folderPath = path.join(__dirname, `output/${id}/dist`);
-    const allFiles = getAllFiles(folderPath);
+    const updatedFolderPath = folderPath.replace(/\\/g, '/');
+    const allFiles = getAllFiles(updatedFolderPath);
+    console.log("folder path from copyFinalDist", updatedFolderPath);
     allFiles.forEach(file => {
-        uploadFile(`dist/${id}/` + file.slice(folderPath.length + 1), file);
+        uploadFile(`dist/${id}/` + file.slice(updatedFolderPath.length + 1), file);
     })
 }
 
@@ -61,6 +63,7 @@ const getAllFiles = (folderPath: string) => {
             response.push(fullFilePath);
         }
     });
+    console.log("response from getAllFiles function ", response);
     return response;
 }
 
